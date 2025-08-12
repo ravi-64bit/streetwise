@@ -134,6 +134,11 @@ form .login-btn.btn:focus {
     background: #f7941e;
     color: #fff;
 }
+input[type="password"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+  outline: none;
+}
 
 /* Responsive styles */
 @media (max-width: 600px) {
