@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head', { title: 'Dashboard - ' }) %>
+<body>
+    <%- include('partials/header') %>
+    <main class="container my-4">
+        <div class="row mb-4">
+            <div class="col-12 col-md-8">
+                <h2>Welcome, <%= vendor.name %></h2>
+                <p class="text-muted mb-1">Address: <%= vendor.address %></p>
+            </div>
+            <div class="col-12 col-md-4 d-flex justify-content-md-end align-items-center gap-2 mt-3 mt-md-0">
+                <a href="/menu" class="btn btn-outline-primary">View Menu</a>
+                <form action="/logout" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+            <h4>Your Plates</h4>
+            <button id="newPlateBtn" class="btn btn-success">Start New Plate</button>
+        </div>
+        <div id="platesContainer" class="row g-3">
+            <% plates.forEach(function(plate, idx) { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card plate-card" data-plate-id="<%= plate.id %>">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Plate #<%= plate.number %></span>
+                            <button class="btn btn-sm btn-outline-danger close-plate-btn" title="Close Plate">&times;</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <strong>Items:</strong>
+                                <ul class="list-group list-group-flush plate-items-list mb-2">
+                                    <% (plate.items || []).forEach(function(item) { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span><%= item.name %></span>
+                                            <span>₹<%= item.price %></span>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                                <button class="btn btn-sm btn-primary add-item-btn" data-plate-id="<%= plate.id %>">Add Item</button>
+                            </div>
+                            <div class="mt-2">
+                                <strong>Total: </strong>
+                                <span class="plate-total">₹<%= plate.total || 0 %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+
+    <!-- Modal for adding menu item -->
+    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form id="addItemForm" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addItemModalLabel">Add Item to Plate</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <select class="form-select" id="menuItemSelect" required>
+              <option value="">Select an item</option>
+              <% menuItems.forEach(function(item) { %>
+                <option value="<%= item._id %>" data-name="<%= item.name %>" data-price="<%= item.price %>">
+                  <%= item.name %> (₹<%= item.price %>)
+                </option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // --- Dashboard Plate Logic ---
+    let plates = <%- JSON.stringify(plates) %>;
+    let menuItems = <%- JSON.stringify(menuItems) %>;
+    let currentPlateId = null;
+
+    // Start New Plate
+    document.getElementById('newPlateBtn').addEventListener('click', async function() {
+        const res = await fetch('/plates', { method: 'POST' });
+        if (res.ok) location.reload();
+    });
+
+    // Add Item Modal
+    const addItemModal = new bootstrap.Modal(document.getElementById('addItemModal'));
+    document.querySelectorAll('.add-item-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentPlateId = btn.getAttribute('data-plate-id');
+            document.getElementById('menuItemSelect').value = '';
+            addItemModal.show();
+        });
+    });
+
+    // Add Item to Plate
+    document.getElementById('addItemForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const menuItemId = document.getElementById('menuItemSelect').value;
+        if (!menuItemId || !currentPlateId) return;
+        const res = await fetch(`/plates/${currentPlateId}/add-item`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ menuItemId })
+        });
+        if (res.ok) location.reload();
+    });
+
+    // Close Plate
+    document.querySelectorAll('.close-plate-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const plateCard = btn.closest('.plate-card');
+            const plateId = plateCard.getAttribute('data-plate-id');
+            if (confirm('Are you sure you want to close this plate?')) {
+                const res = await fetch(`/plates/${plateId}`, { method: 'DELETE' });
+                if (res.ok) location.reload();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

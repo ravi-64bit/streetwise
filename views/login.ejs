@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head',{title : "Login - "})%>
+<body>
+    <%- include('partials/header')%>
+    <main class="d-flex align-items-center justify-content-center min-vh-100" style="background:#f6f8fa;">
+        <div class="card shadow-sm p-4" style="max-width:400px;width:100%;">
+            <h2 class="mb-4 text-center" style="color:#005792;">Vendor Login</h2>
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger py-2"><%= error %></div>
+            <% } %>
+            <form method="POST" action="/login" class="d-grid gap-3">
+                <input 
+                    type="text" 
+                    name="username" 
+                    class="form-control"
+                    placeholder="Username" 
+                    required>
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-control"
+                    placeholder="Password" 
+                    required>
+                <button 
+                    type="submit" 
+                    class="btn btn-primary w-100 login-btn">
+                    Login
+                </button>
+            </form>
+        </div>
+    </main>
+   <%- include('partials/footer') %>
+</body>
+</html>
