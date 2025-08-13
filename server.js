@@ -60,6 +60,18 @@ app.get("/dashboard", async (req, res) => {
   res.render('dashboard', { vendor, plates, menuItems });
 });
 
+
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).send("Error logging out");
+    }
+    res.redirect('/login');
+  });
+});
+
+
+
 // Start server
 app.listen(PORT, (error) => {
   if (error) {

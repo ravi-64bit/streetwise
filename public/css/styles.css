@@ -1,33 +1,33 @@
 /*
 ================================================
-THEME: DECCAN DAWN
-A modern, vibrant theme for Hyderabadi vendors.
+THEME: IRANI CHAI & CASSETTES
+A warm, nostalgic retro theme.
 ================================================
 */
 
 /* --- FONT IMPORT --- */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Roboto+Mono:wght@400;700&display=swap');
 
 /* --- ROOT VARIABLES --- */
 :root {
-    --charcoal: #2b3a55;
-    --teal: #008080;
-    --gold: #f7941e;
-    --limestone-bg: #fdfdfd;
-    --light-grey: #f0f2f5;
-    --text-primary: #333;
-    --text-light: #6c757d;
-    --border-radius: 12px;
-    --shadow-sm: 0 4px 12px rgba(0,0,0,0.07);
-    --shadow-md: 0 6px 20px rgba(0,0,0,0.1);
-    --plate-card-h: clamp(320px, 38vh, 380px); /* Uniform card height */
+    --cafe-brown: #5D4037;
+    --faded-orange: #E57373;
+    --mustard-yellow: #FFB300;
+    --pista-green: #A5D6A7;
+    --parchment-bg: #FEF9E7;
+    --text-primary: #424242;
+    --border-style: 2px solid var(--cafe-brown);
+    --radius-sm: 4px;
+    --radius-md: 8px;
 }
 
 /* --- GENERAL BODY & TYPOGRAPHY --- */
 body {
     margin: 0;
-    font-family: 'Lato', 'Segoe UI', Arial, sans-serif;
-    background: var(--light-grey);
+    font-family: 'Roboto Mono', monospace;
+    background-color: var(--parchment-bg);
+    /* Subtle noise texture for a vintage feel */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;
@@ -35,19 +35,16 @@ body {
 }
 
 h2, h4 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    color: var(--charcoal);
+    font-family: 'Kdam Thmor Pro', sans-serif;
+    color: var(--cafe-brown);
 }
 
 /* --- STICKY HEADER --- */
 .sticky-header {
     position: sticky;
     top: 0;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: saturate(180%) blur(10px);
-    -webkit-backdrop-filter: saturate(180%) blur(10px);
-    box-shadow: var(--shadow-sm);
+    background: var(--parchment-bg);
+    border-bottom: var(--border-style);
     z-index: 1000;
     padding: 12px 2%;
     display: flex;
@@ -67,45 +64,41 @@ h2, h4 {
 }
 
 .logo-text {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Kdam Thmor Pro', sans-serif;
     font-size: 2rem;
-    font-weight: 700;
     display: flex;
     align-items: center;
     margin-left: 12px;
 }
 
-.street { color: var(--teal); }
-.wise { color: var(--gold); }
+.street { color: var(--faded-orange); }
+.wise { color: var(--cafe-brown); }
 
 .tagline {
     font-size: 1rem;
-    color: var(--text-light);
+    color: var(--text-primary);
     margin-left: 20px;
 }
 
 /* --- BUTTONS --- */
 .login-btn {
-    background: var(--teal);
+    background: var(--faded-orange);
     color: #fff;
-    border: none;
-    border-radius: 30px;
+    border: var(--border-style);
+    border-radius: var(--radius-sm);
     font-weight: 700;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Roboto Mono', monospace;
     font-size: 1rem;
-    padding: 12px 32px;
+    padding: 10px 30px;
     text-decoration: none;
-    display: inline-block;
     text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 128, 128, 0.3);
+    transition: all 0.2s ease-in-out;
 }
 
 .login-btn:hover, .login-btn:focus {
-    background: var(--gold);
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(247, 148, 30, 0.4);
+    background: var(--mustard-yellow);
+    color: var(--cafe-brown);
+    border-color: var(--cafe-brown);
 }
 
 /* --- MAIN CONTENT & DESCRIPTION --- */
@@ -118,224 +111,191 @@ main {
 }
 
 .description {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    background: var(--parchment-bg);
     padding: 40px 30px;
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: var(--shadow-md);
+    border: var(--border-style);
+    border-radius: var(--radius-md);
+    box-shadow: 8px 8px 0 var(--pista-green);
     text-align: center;
     max-width: 800px;
+    transition: box-shadow 0.2s ease;
+}
+
+.description:hover {
+    box-shadow: 10px 10px 0 var(--faded-orange);
 }
  
 .description h2 {
-    color: var(--charcoal);
     margin-bottom: 16px;
     font-size: 2rem;
 }
 
 .description p {
-    color: var(--text-primary);
     font-size: 1.1rem;
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
 /* --- STICKY FOOTER --- */
 .sticky-footer {
-    background: var(--charcoal);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--cafe-brown);
+    color: var(--parchment-bg);
     text-align: center;
     padding: 16px 0;
     font-size: 0.95rem;
 }
 
 
-/* === DASHBOARD STYLE UPGRADE === */
+/* === DASHBOARD STYLE UPGRADE (RETRO) === */
 
 .text-muted {
-    color: var(--text-light) !important;
+    color: #757575 !important;
 }
 
-/* Welcome/Toolbar */
 .dashboard-toolbar {
-    background: #fff;
+    background: var(--pista-green);
     padding: 1.25rem 1.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border: var(--border-style);
+    border-radius: var(--radius-md);
 }
 
 /* General Buttons */
 .btn {
     font-weight: 700;
-    font-family: 'Lato', sans-serif;
-    border-radius: 30px;
+    font-family: 'Roboto Mono', monospace;
+    border-radius: var(--radius-sm);
     transition: all 0.2s ease-in-out;
     padding: 10px 24px;
+    border: var(--border-style);
+    box-shadow: 4px 4px 0 var(--cafe-brown);
+}
+.btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--cafe-brown);
+}
+.btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
 }
 
-.btn-outline-primary { border-color: var(--teal); color: var(--teal); }
-.btn-outline-primary:hover { background: var(--teal); color: #fff; }
 
-.btn-outline-danger { border-color: #dc3545; color: #dc3545; }
-.btn-outline-danger:hover { background: #dc3545; color: #fff; }
+.btn-outline-primary {
+    background: transparent;
+    border-color: var(--cafe-brown);
+    color: var(--cafe-brown);
+}
+.btn-outline-primary:hover {
+    background: var(--faded-orange);
+    color: #fff;
+}
 
 .btn-success {
-    background: linear-gradient(135deg, #28a745, #2ddc53);
-    border: none;
+    background: var(--faded-orange);
+    border-color: var(--cafe-brown);
     color: #fff;
 }
 .btn-success:hover {
-    opacity: 0.9;
-    box-shadow: 0 4px 15px rgba(45, 220, 83, 0.3);
-    transform: translateY(-2px);
+    background: var(--mustard-yellow);
+    color: var(--cafe-brown);
 }
 
 /* Plate Cards */
 .plate-card {
-    border: none;
-    border-radius: var(--border-radius);
+    border: var(--border-style);
+    border-radius: var(--radius-md);
     overflow: hidden;
     background: #fff;
-    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
-    height: var(--plate-card-h);
-    transition: all 0.3s ease;
-}
-
-.plate-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
+    height: clamp(320px, 38vh, 380px); /* Uniform height */
 }
 
 .plate-card .card-header {
-    background: var(--charcoal);
-    color: #fff;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
+    background: var(--mustard-yellow);
+    color: var(--cafe-brown);
+    font-family: 'Kdam Thmor Pro', sans-serif;
     padding: .75rem 1.25rem;
-}
-.plate-card .card-header button {
-    color: #fff;
-    border-color: rgba(255,255,255,0.5);
+    border-bottom: var(--border-style);
 }
 
 .plate-card .card-body {
-    padding: 1rem 1.25rem;
+    padding: 0.5rem 1.25rem;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    background: #fff;
 }
 
 .plate-items-list {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    margin: 0.5rem 0;
-    padding-right: 5px; /* for scrollbar spacing */
 }
-
-/* Custom Scrollbar for list */
-.plate-items-list::-webkit-scrollbar { width: 5px; }
-.plate-items-list::-webkit-scrollbar-track { background: transparent; }
-.plate-items-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
-.plate-items-list::-webkit-scrollbar-thumb:hover { background: #aaa; }
-
 
 .plate-card .list-group-item {
     font-size: 0.95rem;
     border: none;
-    padding: .5rem 0;
+    padding: .6rem 0;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid var(--light-grey);
+    border-bottom: 1px dashed #ccc;
 }
 .plate-card .list-group-item:last-child {
     border-bottom: none;
 }
-.plate-card strong { color: var(--charcoal); }
+.plate-card strong {
+    color: var(--cafe-brown);
+    font-weight: 700;
+}
 
 .plate-total {
     font-weight: 700;
     font-size: 1.1rem;
-    color: var(--teal);
-    border-top: 2px solid var(--light-grey);
+    color: var(--cafe-brown);
+    border-top: var(--border-style);
     padding-top: 0.75rem;
     margin-top: auto;
+    background-color: var(--pista-green);
+    margin: 0 -1.25rem -0.5rem;
+    padding: 0.75rem 1.25rem;
 }
 
 /* Modal Styling */
 .modal-content {
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
-    border: none;
+    border-radius: var(--radius-md);
+    border: var(--border-style);
+    box-shadow: 8px 8px 0 #999;
 }
 .modal-header {
-    background: var(--charcoal);
-    color: #fff;
-    border-bottom: none;
+    background: var(--mustard-yellow);
+    color: var(--cafe-brown);
+    border-bottom: var(--border-style);
 }
 .modal-footer {
-    border-top: 1px solid var(--light-grey);
+    border-top: 1px solid #ddd;
+    background: var(--parchment-bg);
 }
 
 
 /* === RESPONSIVE STYLES === */
 
-/* -- Tablet and smaller devices -- */
 @media (max-width: 992px) {
     .sticky-header {
         flex-direction: column;
         align-items: center;
         padding: 15px 2%;
     }
-    .logo-container {
-        margin-bottom: 12px;
-    }
-    .tagline {
-        margin: 0 0 12px 0;
-        text-align: center;
-    }
-    .description {
-        padding: 30px 20px;
-        max-width: 90%;
-    }
-    .dashboard-toolbar {
-        text-align: center;
-    }
-    .dashboard-toolbar .d-flex {
-        justify-content: center !important;
-        margin-top: 1rem;
-    }
+    .logo-container { margin-bottom: 12px; }
+    .tagline { margin: 0 0 12px 0; text-align: center; }
 }
 
-/* -- Mobile devices -- */
 @media (max-width: 600px) {
     body { font-size: 14px; }
     
-    .sticky-header {
-        padding: 10px 4%;
-    }
-
     .logo-img { height: 36px; }
     .logo-text { font-size: 1.5rem; }
-    .tagline { font-size: 0.9rem; }
-
-    .login-btn {
-        width: 100%;
-        padding: 12px 20px;
-        font-size: 0.95rem;
-    }
     
-    .description {
-        padding: 20px 15px;
-        max-width: 95%;
-    }
-    .description h2 {
-        font-size: 1.5rem;
-    }
-    .description p {
-        font-size: 1rem;
-    }
+    .login-btn { width: 100%; }
+    
+    .description { padding: 20px 15px; }
+    .description h2 { font-size: 1.5rem; }
 }
