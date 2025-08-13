@@ -1,10 +1,15 @@
 require('dotenv').config();
-
 const express = require('express');
 const path = require('path');
-const admin = require('firebase-admin');
-const serviceAccount = require('./firebase.json');
 const session = require('express-session');
+
+// Import DB helpers
+const {
+  getVendorByUsername,
+  getVendorById,
+  getVendorPlates,
+  getVendorMenuItems
+} = require('./db');
 
 const PORT = process.env.PORT;
 const SESSION_SECRET = process.env.SESSION_SECRET_KEY;
@@ -20,63 +25,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-
-
-// Initialize Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-const db = admin.firestore();
-
-// Dummy session for demo (replace with real auth/session in production)
-const DEMO_VENDOR_PHONE = '9999999999'; // Change as needed
-
-// Helper: Get vendor by username (phone number)
-async function getVendorByUsername(username) {
-  const snapshot = await db.collection('vendor').where('username', '==', username).get();
-  if (snapshot.empty) return null;
-  const doc = snapshot.docs[0];
-  return { id: doc.id, ...doc.data() };
-}
-
-// Helper: Get vendor by ID
-async function getVendorById(id) {
-  const doc = await db.collection('vendor').doc(id).get();
-  if (!doc.exists) return null;
-  return { id: doc.id, ...doc.data() };
-}
-
-// Helper: Get plates for vendor
-async function getVendorPlates(vendorId) {
-  const snapshot = await db.collection('plates')
-    .where('vendorId', '==', vendorId)
-    .orderBy('number', 'asc')
-    .get();
-  return snapshot.docs.map(doc => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      number: data.number,
-      items: data.items || [],
-      total: (data.items || []).reduce((sum, item) => sum + (item.price || 0), 0)
-    };
-  });
-}
-
-// Helper: Get menu items for vendor
-async function getVendorMenuItems(vendorId) {
-  const snapshot = await db.collection('menuItems')
-    .where('vendorId', '==', vendorId)
-    .get();
-  return snapshot.docs.map(doc => ({
-    _id: doc.id,
-    name: doc.data().itemName,
-    price: doc.data().price
-  }));
-}
-
 // ROUTES
-
 app.get("/", (req, res) => {
   res.render('index');
 });
@@ -94,8 +43,7 @@ app.post("/login", async (req, res) => {
   if (vendor.password !== password) {
     return res.status(403).render('login', { error: "Invalid password" });
   }
-
-  req.session.vendorId = vendor.id; // Save vendor ID to session
+  req.session.vendorId = vendor.id;
   res.redirect('/dashboard');
 });
 
@@ -112,11 +60,11 @@ app.get("/dashboard", async (req, res) => {
   res.render('dashboard', { vendor, plates, menuItems });
 });
 
-
+// Start server
 app.listen(PORT, (error) => {
   if (error) {
-    console.log(error);
+    console.error(error);
   } else {
-    console.log("server running at http://localhost:3000");
+    console.log(`server running at http://localhost:${PORT}`);
   }
 });

@@ -163,6 +163,174 @@ input[type="password"]:focus {
     }
 }
 
+/* === DASHBOARD STYLE UPGRADE === */
+body {
+  background: #f4f6f8;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  color: #333;
+}
+
+/* Section headings */
+h2, h4 {
+  font-weight: 600;
+  color: #2b3a55;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* Welcome row */
+.row.mb-4 {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: .5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+/* Action buttons (View menu, Logout) */
+.btn {
+  font-weight: 500;
+  border-radius: 30px;
+  transition: all 0.2s ease;
+}
+.btn-outline-primary:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* Start New Plate button */
+.btn-success {
+  background: linear-gradient(135deg, #28a745, #34ce57);
+  border: none;
+}
+.btn-success:hover {
+  opacity: 0.9;
+}
+
+/* Plate cards */
+.plate-card {
+  border: none;
+  border-radius: .75rem;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+}
+.plate-card .card-header {
+  background: #2b3a55;
+  color: #fff;
+  font-weight: 500;
+  padding: .75rem 1rem;
+}
+.plate-card .card-header button {
+  color: #fff;
+  border-color: rgba(255,255,255,0.5);
+}
+.plate-card .card-body {
+  padding: 1rem;
+}
+.plate-card .list-group-item {
+  font-size: 0.95rem;
+  border: none;
+  padding: .5rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+.plate-card strong {
+  color: #2b3a55;
+}
+
+/* Plate total */
+.plate-total {
+  font-weight: 700;
+  color: #28a745;
+}
+
+/* Modal */
+.modal-content {
+  border-radius: .5rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+.modal-header {
+  background: #2b3a55;
+  color: #fff;
+  border-bottom: none;
+}
+.modal-footer {
+  border-top: none;
+}
+
+/* Footer */
+footer, .sticky-footer {
+  background: #2b3a55;
+  color: #fff;
+  padding: .75rem;
+  text-align: center;
+}
+
+/* Hover lift effect for cards */
+.plate-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+}
+
+/* Top toolbar spacing */
+.dashboard-toolbar {
+  background: #fff;
+  border-radius: .5rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+/* One-size cards */
+:root { --plate-card-h: clamp(300px, 36vh, 360px); }
+
+.plate-card {
+  height: var(--plate-card-h);
+  display: flex;
+  flex-direction: column;
+}
+
+.plate-card .card-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* required so inner scroll can work in flex context */
+}
+
+.plate-items-list {
+  flex: 1 1 auto;      /* take remaining space */
+  min-height: 0;       /* allow shrinking */
+  overflow-y: auto;    /* scroll items if too many */
+  border-top: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Make list items compact so more fit without overflow */
+.plate-items-list .list-group-item {
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+}
+
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .row.mb-4 {
+    text-align: center;
+  }
+  .col-12.col-md-4 {
+    justify-content: center !important;
+    margin-top: 1rem;
+  }
+}
+
+
 /* Responsive styles */
 @media (max-width: 900px) {
     .sticky-header {
