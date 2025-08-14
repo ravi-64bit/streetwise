@@ -44,12 +44,13 @@ app.post("/login", async (req, res) => {
     return res.status(403).render('login', { error: "Invalid password" });
   }
   req.session.vendorId = vendor.id;
+  //console.log(vendor.id)
   res.redirect('/dashboard');
 });
 
 app.get("/dashboard", async (req, res) => {
   const vendorId = req.session.vendorId;
-  if (!vendorId) return res.status(401).send("Unauthorized");
+  if (!vendorId) return res.status(401).render('unauthorized', { title: "Unauthorized access" });
 
   const vendor = await getVendorById(vendorId);
   if (!vendor) return res.status(404).send("Vendor not found");
@@ -59,18 +60,6 @@ app.get("/dashboard", async (req, res) => {
 
   res.render('dashboard', { vendor, plates, menuItems });
 });
-
-
-app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).send("Error logging out");
-    }
-    res.redirect('/login');
-  });
-});
-
-
 
 // Start server
 app.listen(PORT, (error) => {

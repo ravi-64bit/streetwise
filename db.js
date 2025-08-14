@@ -1,58 +1,67 @@
 // db.js
-const admin = require('firebase-admin');
-const serviceAccount = require('./firebase.json');
+const mongoose = require('mongoose');
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/swdb';
 
-// Initialize Firebase Admin only once
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-}
-const db = admin.firestore();
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// === DB Helper functions ===
+// Vendor Schema
+const vendorSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  // add other fields as needed
+});
+const Vendor = mongoose.model('Vendor', vendorSchema);
 
-// Get vendor by username (phone number)
+// Plate Schema
+const plateSchema = new mongoose.Schema({
+  vendorId: mongoose.Schema.Types.ObjectId,
+  number: Number,
+  items: [{ itemName: String, price: Number }]
+});
+const Plate = mongoose.model('Plate', plateSchema);
+
+// Menu Item Schema
+const menuItemSchema = new mongoose.Schema({
+  vendorId: mongoose.Schema.Types.ObjectId,
+  itemName: String,
+  price: Number
+});
+const MenuItem = mongoose.model('MenuItem', menuItemSchema);
+
+// Get vendor by username
 async function getVendorByUsername(username) {
-  const snapshot = await db.collection('vendor').where('username', '==', username).get();
-  if (snapshot.empty) return null;
-  const doc = snapshot.docs[0];
-  return { id: doc.id, ...doc.data() };
+  const vendor = await Vendor.findOne({ username }).lean();
+  if (!vendor) return null;
+  vendor.id = vendor._id.toString();
+  return vendor;
 }
 
 // Get vendor by ID
 async function getVendorById(id) {
-  const doc = await db.collection('vendor').doc(id).get();
-  if (!doc.exists) return null;
-  return { id: doc.id, ...doc.data() };
+  const vendor = await Vendor.findById(id).lean();
+  if (!vendor) return null;
+  vendor.id = vendor._id.toString();
+  return vendor;
 }
 
 // Get plates for vendor
 async function getVendorPlates(vendorId) {
-  const snapshot = await db.collection('plates')
-    .where('vendorId', '==', vendorId)
-    .orderBy('number', 'asc')
-    .get();
-  return snapshot.docs.map(doc => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      number: data.number,
-      items: data.items || [],
-      total: (data.items || []).reduce((sum, item) => sum + (item.price || 0), 0)
-    };
-  });
+  const plates = await Plate.find({ vendorId }).sort({ number: 1 }).lean();
+  return plates.map(plate => ({
+    id: plate._id.toString(),
+    number: plate.number,
+    items: plate.items || [],
+    total: (plate.items || []).reduce((sum, item) => sum + (item.price || 0), 0)
+  }));
 }
 
 // Get menu items for vendor
 async function getVendorMenuItems(vendorId) {
-  const snapshot = await db.collection('menuItems')
-    .where('vendorId', '==', vendorId)
-    .get();
-  return snapshot.docs.map(doc => ({
-    _id: doc.id,
-    name: doc.data().itemName,
-    price: doc.data().price
+  const items = await MenuItem.find({ vendorId }).lean();
+  return items.map(item => ({
+    _id: item._id.toString(),
+    name: item.itemName,
+    price: item.price
   }));
 }
 

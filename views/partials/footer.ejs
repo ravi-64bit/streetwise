@@ -1,3 +1,24 @@
 <footer class="sticky-footer bg-white text-center py-3 shadow-sm">
         <p class="mb-0">&copy; 2025 StreetWise. Empowering vendors in Hyderabad.</p>
+
 </footer>
+
+<script>
+// Hide header/footer on scroll down, show on scroll up
+let lastScroll = 0;
+const header = document.querySelector('.sticky-header');
+const footer = document.querySelector('.sticky-footer, footer');
+window.addEventListener('scroll', () => {
+    const currScroll = window.pageYOffset;
+    if (currScroll > lastScroll && currScroll > 60) {
+        // Scrolling down
+        header && header.classList.add('hide-header');
+        footer && footer.classList.add('hide-footer');
+    } else {
+        // Scrolling up
+        header && header.classList.remove('hide-header');
+        footer && footer.classList.remove('hide-footer');
+    }
+    lastScroll = currScroll;
+});
+</script>

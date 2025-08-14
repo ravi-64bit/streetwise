@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('partials/head',{title:''})%>
-<body>
-    <header class="sticky-header">
-        <div class="logo-container">
-            <img src="/images/logo.png" alt="StreetWise Logo" class="logo-img">
+<%- include('partials/head', {title: 'StreetWise - Simple Customer Tracking'}) %>
+<body class="landing-body">
+
+<header class="sticky-header">
+    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between py-2">
+        <div class="d-flex align-items-center justify-content-center w-100 w-md-auto mb-2 mb-md-0 logo">
+            <img src="/images/logo.png" alt="StreetWise Logo" class="logo-img me-2">
             <span class="logo-text">
                 <span class="street">Street</span><span class="wise">Wise</span>
             </span>
         </div>
-        <a href="/login" class="login-btn">Login</a>
-    </header>
-    <main>
         
-        <section class="description card">
-            <h2>Track your customers, all at a time</h2>
-            <p>
-                Effortlessly track your customers, understand their needs, and boost your sales with StreetWise.<br>
-                Simple, secure, and designed for street vendors.
-            </p>
-        </section>
-        
+        <a href="/login" class="header-login-btn">Login</a>
 
+    </div>
+</header>
+    <main class="landing-main">
+        <section class="hero-card-container">
+            
+            <div class="hero-card">
+                <div class="card-content">
+                    <h2 class="card-title">Your Business, Crystal Clear.</h2>
+                    <p class="card-description">
+                        Effortlessly track customer dues with a simple, secure digital khata. Made for the smart vendors of Hyderabad, by StreetWise.
+                    </p>
+                    <a href="/register" class="card-cta-button">Start for Free</a>
+                </div>
+            </div>
+
+        </section>
     </main>
+
     <%- include('partials/footer') %>
+
 </body>
 </html>
