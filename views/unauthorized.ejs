@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%-include ('partials/head',{title:'401 Unauthorized -'}) %>
+    <body>
+        <%-include ('partials/header') %>
+        <main class="container my-4">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Unauthorized Access</h4>
+                <p>You do not have permission to view this page. Please log in or contact support if you believe this is an error.</p>
+                <hr>
+                <p class="mb-0"><a href="/login" class="btn btn-primary">Go to Login</a></p>
+            </div>
+        </main>
+        <%-include ('partials/footer') %>
+    </body>
+
+</html>
