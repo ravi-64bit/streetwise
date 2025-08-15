@@ -23,7 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // true on Vercel
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
 }));
 
 // ROUTES
