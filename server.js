@@ -2,6 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const mongoose = require('mongoose'); // Add at the top
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 // Import DB helpers
 const {
@@ -23,13 +26,32 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // true on Vercel
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   }
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport local strategy
+passport.use(new LocalStrategy(async (username, password, done) => {
+  const vendor = await getVendorByUsername(username);
+  if (!vendor) return done(null, false, { message: 'Vendor not found' });
+  if (vendor.password !== password) return done(null, false, { message: 'Invalid password' });
+  return done(null, vendor);
+}));
+
+passport.serializeUser((vendor, done) => {
+  done(null, vendor.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  const vendor = await getVendorById(id);
+  done(null, vendor);
+});
 
 // ROUTES
 app.get("/", (req, res) => {
@@ -45,19 +67,12 @@ app.get("/login", (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const vendor = await getVendorByUsername(username);
-  if (!vendor) {
-    return res.status(401).render('login', { error: "Vendor not found" });
-  }
-  if (vendor.password !== password) {
-    return res.status(403).render('login', { error: "Invalid password" });
-  }
-  req.session.vendorId = vendor.id;
-  //console.log(vendor.id)
-  res.redirect('/dashboard');
-});
+// Login route
+app.post("/login", passport.authenticate('local', {
+  successRedirect: '/dashboard',
+  failureRedirect: '/login',
+  failureFlash: false
+}));
 
 app.get("/dashboard", async (req, res) => {
   const vendorId = req.session.vendorId;
@@ -66,16 +81,32 @@ app.get("/dashboard", async (req, res) => {
   const vendor = await getVendorById(vendorId);
   if (!vendor) return res.status(404).send("Vendor not found");
 
-  //const plates = await getVendorPlates(vendor.id);
-  const menuItems = await getVendorMenuItems(vendor.id);
+  const menuItems = await getVendorMenuItems(vendorId); // Use vendorId directly
+  res.render('dashboard', { vendor, menuItems });
+});
 
+// Auth middleware
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.status(401).render('unauthorized', { title: "Unauthorized access" });
+}
+
+// Use middleware for protected routes
+app.get("/dashboard", ensureAuthenticated, async (req, res) => {
+  const vendor = req.user;
+  const menuItems = await getVendorMenuItems(vendor.id);
   res.render('dashboard', { vendor, menuItems });
 });
 
 // Render Add Menu page
 app.get("/add-menu", async (req, res) => {
   if (!req.session.vendorId) return res.status(401).render('unauthorized', { title: "Unauthorized access" });
-  const menuItems = await MenuItem.find({ vendorId: req.session.vendorId }).lean();
+  const menuItems = await MenuItem.find({ vendorId: mongoose.Types.ObjectId(req.session.vendorId) }).lean();
+  res.render('add-menu', { error: null, menuItems });
+});
+
+app.get("/add-menu", ensureAuthenticated, async (req, res) => {
+  const menuItems = await MenuItem.find({ vendorId: mongoose.Types.ObjectId(req.user.id) }).lean();
   res.render('add-menu', { error: null, menuItems });
 });
 
@@ -84,26 +115,44 @@ app.post("/add-menu", async (req, res) => {
   if (!req.session.vendorId) return res.status(401).render('unauthorized', { title: "Unauthorized access" });
   const { itemName, price } = req.body;
   if (!itemName || !price) {
-    return res.render('add-menu', { error: "All fields required" });
+    const menuItems = await MenuItem.find({ vendorId: mongoose.Types.ObjectId(req.session.vendorId) }).lean();
+    return res.render('add-menu', { error: "All fields required", menuItems });
   }
   try {
     await MenuItem.create({
-      vendorId: req.session.vendorId,
+      vendorId: mongoose.Types.ObjectId(req.session.vendorId),
       itemName,
       price: parseFloat(price)
     });
     res.redirect('/add-menu');
   } catch (err) {
-    res.render('add-menu', { error: "Error adding menu item" });
+    const menuItems = await MenuItem.find({ vendorId: mongoose.Types.ObjectId(req.session.vendorId) }).lean();
+    res.render('add-menu', { error: "Error adding menu item", menuItems });
   }
 });
 
+app.post("/add-menu", ensureAuthenticated, async (req, res) => {
+  const { itemName, price } = req.body;
+  if (!itemName || !price) {
+    const menuItems = await MenuItem.find({ vendorId: mongoose.Types.ObjectId(req.user.id) }).lean();
+    return res.render('add-menu', { error: "All fields required", menuItems });
+  }
+  try {
+    await MenuItem.create({
+      vendorId: mongoose.Types.ObjectId(req.user.id),
+      itemName,
+      price: parseFloat(price)
+    });
+    res.redirect('/add-menu');
+  } catch (err) {
+    const menuItems = await MenuItem.find({ vendorId: mongoose.Types.ObjectId(req.user.id) }).lean();
+    res.render('add-menu', { error: "Error adding menu item", menuItems });
+  }
+});
+
+// Logout route
 app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
-      return res.status(500).send("Internal server error");
-    }
+  req.logout(() => {
     res.redirect('/login');
   });
 });
