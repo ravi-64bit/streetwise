@@ -25,6 +25,31 @@
       </div>
 
       <div id="platesContainer" class="row g-3"></div>
+
+      <!-- Add Item Modal -->
+      <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <form id="addItemForm" class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addItemModalLabel">Add Item to Plate</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="menuItemSelect" class="form-label">Select Item</label>
+                <select id="menuItemSelect" class="form-select" required>
+                  <!-- Options will be populated by JS -->
+                </select>
+              </div>
+              <div id="selectedItemPrice" class="mb-2 text-muted"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Add Item</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </main>
 
     <%- include('partials/footer') %>

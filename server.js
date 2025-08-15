@@ -7,9 +7,9 @@ const session = require('express-session');
 const {
   getVendorByUsername,
   getVendorById,
-  getVendorPlates,
   getVendorMenuItems
 } = require('./db');
+const { MenuItem } = require('./db'); // Add this export in db.js if not present
 
 const PORT = process.env.PORT;
 const SESSION_SECRET = process.env.SESSION_SECRET_KEY;
@@ -31,7 +31,12 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  if (req.session.vendorId) {
+    return res.redirect('/dashboard');
+  }
+  else{
   res.render('login', { error: null });
+  }
 });
 
 app.post("/login", async (req, res) => {
@@ -55,10 +60,46 @@ app.get("/dashboard", async (req, res) => {
   const vendor = await getVendorById(vendorId);
   if (!vendor) return res.status(404).send("Vendor not found");
 
-  const plates = await getVendorPlates(vendor.id);
+  //const plates = await getVendorPlates(vendor.id);
   const menuItems = await getVendorMenuItems(vendor.id);
 
-  res.render('dashboard', { vendor, plates, menuItems });
+  res.render('dashboard', { vendor, menuItems });
+});
+
+// Render Add Menu page
+app.get("/add-menu", async (req, res) => {
+  if (!req.session.vendorId) return res.status(401).render('unauthorized', { title: "Unauthorized access" });
+  const menuItems = await MenuItem.find({ vendorId: req.session.vendorId }).lean();
+  res.render('add-menu', { error: null, menuItems });
+});
+
+// Handle Add Menu form submission
+app.post("/add-menu", async (req, res) => {
+  if (!req.session.vendorId) return res.status(401).render('unauthorized', { title: "Unauthorized access" });
+  const { itemName, price } = req.body;
+  if (!itemName || !price) {
+    return res.render('add-menu', { error: "All fields required" });
+  }
+  try {
+    await MenuItem.create({
+      vendorId: req.session.vendorId,
+      itemName,
+      price: parseFloat(price)
+    });
+    res.redirect('/add-menu');
+  } catch (err) {
+    res.render('add-menu', { error: "Error adding menu item" });
+  }
+});
+
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).send("Internal server error");
+    }
+    res.redirect('/login');
+  });
 });
 
 // Start server
