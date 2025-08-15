@@ -82,33 +82,36 @@ app.get("/dashboard", ensureAuthenticated, async (req, res) => {
 
 app.get("/add-menu", ensureAuthenticated, async (req, res) => {
   const menuItems = await MenuItem.find({
-    vendorId: mongoose.Types.ObjectId(req.user.id)
+    vendorId: new mongoose.Types.ObjectId(req.user.id)
   }).lean()
   res.render('add-menu', { error: null, menuItems })
 })
+
 
 app.post("/add-menu", ensureAuthenticated, async (req, res) => {
   const { itemName, price } = req.body
   if (!itemName || !price) {
     const menuItems = await MenuItem.find({
-      vendorId: mongoose.Types.ObjectId(req.user.id)
+      vendorId: new mongoose.Types.ObjectId(req.user.id)
     }).lean()
     return res.render('add-menu', { error: "All fields required", menuItems })
   }
   try {
     await MenuItem.create({
-      vendorId: mongoose.Types.ObjectId(req.user.id),
+      vendorId: new mongoose.Types.ObjectId(req.user.id),
       itemName,
       price: parseFloat(price)
     })
     res.redirect('/add-menu')
   } catch (err) {
+    console.error("Error creating menu item:", err) // 👈 Add this for better logs
     const menuItems = await MenuItem.find({
-      vendorId: mongoose.Types.ObjectId(req.user.id)
+      vendorId: new mongoose.Types.ObjectId(req.user.id)
     }).lean()
     res.render('add-menu', { error: "Error adding menu item", menuItems })
   }
 })
+
 
 app.post("/logout", (req, res) => {
   req.logout(() => res.redirect('/login'))
