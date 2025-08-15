@@ -1,5 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+<%- include('partials/head', {title: 'Unauthorized - StreetWise'}) %>
+<body class="landing-body">
+
+    <%- include('partials/header') %>
+
+    <main class="landing-main">
+        <section class="hero-card-container">
+            <div class="hero-card">
+                <div class="card-content">
+                    <h2 class="card-title">401 - Unauthorized Access</h2>
+                    <p class="card-description">
+                        Sorry, you do not have permission to view this page.<br>
+                        Please <a href="/login">log in</a> to continue.
+                    </p>
+                    <a href="/" class="card-cta-button">Go to Home</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
     <%-include ('partials/head',{title:'401 Unauthorized -'}) %>
     <body>
         <%-include ('partials/header') %>

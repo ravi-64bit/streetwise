@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head', { title: 'Add Menu Item' }) %>
+<body>
+  <%- include('partials/header') %>
+  <main class="dashboard-container">
+    <h1>Add Menu Item</h1>
+    <% if (error) { %>
+      <p style="color:red"><%= error %></p>
+    <% } %>
+    <form method="POST" action="/add-menu" class="plate-card" style="margin-bottom:2rem;">
+      <div>
+        <label for="itemName">Item Name:</label>
+        <input type="text" name="itemName" id="itemName" required>
+      </div>
+      <div>
+        <label for="price">Price:</label>
+        <input type="number" name="price" id="price" step="0.01" required>
+      </div>
+      <button type="submit" class="btn btn-outline-primary" style="margin-top:1rem;">Add Item</button>
+    </form>
+
+    <section class="plate-card">
+      <div class="card-header">
+        <h4>Your Menu Items</h4>
+      </div>
+      <div class="card-body">
+        <ul class="plate-items-list">
+          <% if (menuItems.length === 0) { %>
+            <li class="list-group-item">No menu items yet.</li>
+          <% } else { %>
+            <% menuItems.forEach(function(item) { %>
+              <li class="list-group-item">
+                <span><strong><%= item.itemName %></strong></span>
+                <span>₹<%= item.price %></span>
+              </li>
+            <% }) %>
+          <% } %>
+        </ul>
+      </div>
+    </section>
+    <a href="/dashboard" class="btn btn-outline-primary" style="margin-top:2rem;">Back to Dashboard</a>
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>

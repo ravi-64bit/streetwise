@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addItemModal = addItemModalEl ? new bootstrap.Modal(addItemModalEl) : null;
   const addItemForm = document.getElementById('addItemForm');
   const menuItemSelect = document.getElementById('menuItemSelect');
+  const selectedItemPriceEl = document.getElementById('selectedItemPrice');
 
   const menuItemsDataEl = document.getElementById('menuItemsData');
   let menuItems = [];
@@ -24,6 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const formatCurrency = (v) => INR.format(Number(v) || 0);
   const escapeHtml = (str) =>
     String(str).replace(/[&<>"']/g, (s) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[s]));
+
+  // Populate dropdown with menu items
+  function populateMenuDropdown() {
+    if (!menuItemSelect) return;
+    menuItemSelect.innerHTML = '<option value="">Select an item</option>' +
+      menuItems.map(item =>
+        `<option value="${item._id}" data-price="${item.price}">${escapeHtml(item.name)} - ₹${item.price}</option>`
+      ).join('');
+    selectedItemPriceEl.textContent = '';
+  }
+
+  // Show price when item is selected
+  menuItemSelect?.addEventListener('change', function() {
+    const selected = menuItems.find(m => String(m._id) === String(this.value));
+    selectedItemPriceEl.textContent = selected ? `Price: ₹${selected.price}` : '';
+  });
 
   function renderPlates() {
     if (!container) return;
@@ -71,7 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
     container.querySelectorAll('.add-item-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         currentPlateId = btn.getAttribute('data-plate-id');
-        if (menuItemSelect) menuItemSelect.value = '';
+        populateMenuDropdown();
+        menuItemSelect.value = '';
+        selectedItemPriceEl.textContent = '';
         addItemModal?.show();
       });
     });
@@ -106,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   viewMenuBtn?.addEventListener('click', () => {
-    alert('Menu page not implemented in demo.');
+    location.href = '/add-menu';
   });
 
   renderPlates();
