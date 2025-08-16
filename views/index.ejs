@@ -4,18 +4,21 @@
 <body class="landing-body">
 
 <header class="sticky-header">
-    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between py-2">
-        <div class="d-flex align-items-center justify-content-center w-100 w-md-auto mb-2 mb-md-0 logo">
-            <img src="/images/logo.png" alt="StreetWise Logo" class="logo-img me-2">
-            <span class="logo-text">
-                <span class="street">Street</span><span class="wise">Wise</span>
-            </span>
-        </div>
-        
-        <a href="/login" class="header-login-btn">Login</a>
-
+  <div class="container header-scroll d-flex flex-row align-items-center gap-3 py-2">
+    <div class="d-flex align-items-center logo">
+      <img src="/images/logo.png" alt="StreetWise Logo" class="logo-img me-2">
+      <span class="logo-text">
+        <span class="street">Street</span><span class="wise">Wise</span>
+      </span>
     </div>
+
+    <!-- Example future nav/action items -->
+    <nav class="d-flex gap-3">
+      <a href="/login" class="header-login-btn">login</a>
+    </nav>
+  </div>
 </header>
+
     <main class="landing-main">
         <section class="hero-card-container">
             
@@ -33,6 +36,14 @@
     </main>
 
     <%- include('partials/footer') %>
+    <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("Service Worker registered"))
+      .catch(err => console.log("SW reg failed:", err));
+  }
+</script>
+
 
 </body>
 </html>

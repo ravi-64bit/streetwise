@@ -5,13 +5,14 @@
     <%- include('partials/header') %>
 
     <main class="container my-4">
-      <!-- Top toolbar -->
-      <div class="row align-items-center g-2 mb-3 dashboard-toolbar">
-        <div class="col-12 col-md-6">
-          <h2 class="mb-0">Welcome, <%= vendor.name %></h2>
+      <!-- Top toolbar (sticky via CSS) -->
+      <div class="dashboard-toolbar">
+        <div class="vendor-meta">
+          <h2 class="mb-1">Welcome, <%= vendor.name %></h2>
           <p class="text-muted mb-0">Address: <%= vendor.address || 'N/A' %></p>
         </div>
-        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center gap-2 mt-2 mt-md-0">
+
+        <div class="toolbar-actions d-flex justify-content-md-end align-items-center gap-2">
           <button id="viewMenuBtn" class="btn btn-outline-primary">View Menu</button>
           <button id="newPlateBtn" class="btn btn-primary">Start New Plate</button>
           <form action="/logout" method="POST" class="d-inline">
@@ -24,7 +25,16 @@
         <h4 class="mb-0">Your Plates</h4>
       </div>
 
-      <div id="platesContainer" class="row g-3"></div>
+      <!-- Responsive grid for plates -->
+      <div id="platesContainer" class="plates-grid">
+        <!-- Your JS can insert each plate as a .plate-card here -->
+        <!-- Example:
+        <article class="plate-card">
+          <div class="card-header"><h4>Plate #123</h4></div>
+          <div class="card-body">...</div>
+        </article>
+        -->
+      </div>
 
       <!-- Add Item Modal -->
       <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
@@ -37,9 +47,7 @@
             <div class="modal-body">
               <div class="mb-3">
                 <label for="menuItemSelect" class="form-label">Select Item</label>
-                <select id="menuItemSelect" class="form-select" required>
-                  <!-- Options will be populated by JS -->
-                </select>
+                <select id="menuItemSelect" class="form-select" required></select>
               </div>
               <div id="selectedItemPrice" class="mb-2 text-muted"></div>
             </div>
