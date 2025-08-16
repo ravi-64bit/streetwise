@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head',{title:'Order'}) %>
+
+<body>
+
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+  <h2 class="text-center">Place Your Order</h2>
+  <form id="orderForm" method="POST" action="/api/orders">
+    <input type="hidden" name="vendorId" value="<%= vendorId %>" />
+
+    <div class="row">
+      <% menuItems.forEach(item => { %>
+        <div class="col-md-4 mb-3">
+          <div class="plate-card">
+            <div class="card-header">
+              <h5><%= item.itemName %></h5>
+              <p>₹<%= item.price %></p>
+            </div>
+            <div class="card-body">
+              <label for="qty-<%= item._id %>">Quantity:</label>
+              <input type="number" min="0" max="10" value="0"
+                     name="quantities[<%= item._id %>]"
+                     class="form-control" id="qty-<%= item._id %>" />
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-success">Place Order</button>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
+
+</body>
+</html>

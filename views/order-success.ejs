@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('partials/head', {title : 'oder placed - '}) %>
+
+<body>
+<%- include('partials/header') %>
+
+<div class="container mt-5 text-center">
+  <h2 class="mb-3">✅ Order Placed Successfully!</h2>
+  <p class="text-muted">Your order has been sent to <strong><%= vendor.name %></strong>.</p>
+
+  <div class="plate-card mx-auto" style="max-width: 500px;">
+    <div class="card-header">
+      <h4>Order Summary</h4>
+      <p>Order ID: <%= order.orderCode %></p>
+    </div>
+    <div class="card-body">
+      <ul class="plate-items-list">
+        <% order.items.forEach(item => { %>
+          <li class="list-group-item">
+            <span><%= item.itemName %> x <%= item.quantity %></span>
+            <strong>₹<%= item.price * item.quantity %></strong>
+          </li>
+        <% }) %>
+      </ul>
+      <hr />
+      <h5>Total: ₹<%= order.total %></h5>
+    </div>
+  </div>
+
+  <p class="mt-4 text-muted">Please wait while your order is being prepared.</p>
+  <a href="/" class="btn btn-outline-primary mt-2">Back to Home</a>
+</div>
+
+<%- include('partials/footer') %>
+</body>
+</html>

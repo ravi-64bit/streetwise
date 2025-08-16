@@ -5,35 +5,51 @@
     <%- include('partials/header') %>
 
     <main class="container my-4">
-      <!-- Top toolbar (sticky via CSS) -->
-      <div class="dashboard-toolbar">
+      <!-- Top toolbar -->
+      <div class="dashboard-toolbar d-flex justify-content-between align-items-center mb-4">
         <div class="vendor-meta">
           <h2 class="mb-1">Welcome, <%= vendor.name %></h2>
           <p class="text-muted mb-0">Address: <%= vendor.address || 'N/A' %></p>
         </div>
 
-        <div class="toolbar-actions d-flex justify-content-md-end align-items-center gap-2">
+        <div class="toolbar-actions d-flex gap-2">
           <button id="viewMenuBtn" class="btn btn-outline-primary">View Menu</button>
-          <button id="newPlateBtn" class="btn btn-primary">Start New Plate</button>
           <form action="/logout" method="POST" class="d-inline">
             <button type="submit" class="btn btn-outline-danger">Logout</button>
           </form>
         </div>
       </div>
 
+      <!-- Orders Section -->
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <h4 class="mb-0">Your Plates</h4>
+        <h4 class="mb-0">Incoming Orders</h4>
       </div>
 
-      <!-- Responsive grid for plates -->
-      <div id="platesContainer" class="plates-grid">
-        <!-- Your JS can insert each plate as a .plate-card here -->
-        <!-- Example:
-        <article class="plate-card">
-          <div class="card-header"><h4>Plate #123</h4></div>
-          <div class="card-body">...</div>
-        </article>
-        -->
+      <div id="ordersContainer" class="plates-grid">
+        <% orders.forEach(order => { %>
+          <div class="plate-card card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">🧾 <%= order.orderCode %></h4>
+              <form method="POST" action="/api/orders/<%= order._id %>?_method=DELETE">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Order">❌</button>
+              </form>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush plate-items-list mb-3">
+                <% order.items.forEach(item => { %>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><%= item.itemName %> x <%= item.quantity %></span>
+                    <strong>₹<%= item.price * item.quantity %></strong>
+                  </li>
+                <% }) %>
+              </ul>
+              <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-sm btn-primary add-item-btn" data-order-id="<%= order._id %>">Add Item</button>
+                <div><strong>Total:</strong> ₹<%= order.total %></div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
       </div>
 
       <!-- Add Item Modal -->
@@ -41,7 +57,7 @@
         <div class="modal-dialog">
           <form id="addItemForm" class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="addItemModalLabel">Add Item to Plate</h5>
+              <h5 class="modal-title" id="addItemModalLabel">Add Item to Order</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

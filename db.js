@@ -21,6 +21,19 @@ const menuItemSchema = new mongoose.Schema({
 });
 const MenuItem = mongoose.model('MenuItem', menuItemSchema);
 
+//order Schema
+const OrderSchema = new mongoose.Schema({
+  vendorId: mongoose.Schema.Types.ObjectId,
+  items: Array,
+  total: Number,
+  createdAt: { type: Date, default: Date.now },
+  status: String,
+  orderCode: String,
+  expiresAt: { type: Date, index: { expires: 0 } } // TTL index
+})
+const Order = mongoose.model('Order', OrderSchema);
+
+
 // Get vendor by username
 async function getVendorByUsername(username) {
   const vendor = await Vendor.findOne({ username }).lean();
@@ -51,5 +64,5 @@ module.exports = {
   getVendorByUsername,
   getVendorById,
   getVendorMenuItems,
-  MenuItem // <-- Add this line to export MenuItem model
+  MenuItem, Order
 };
