@@ -119,7 +119,7 @@ app.post("/logout", (req, res) => {
 
 
 app.get("/register", (req, res) => {
-  res.send('<marquee><h1>please reach to the developer at <a style="font-size:50px" href="tel:+916281407118">+91 6281407118</a> to register your business</h1></marquee>');
+  res.send('<marquee scrollamount=12><h1>please reach to the developer at <a style="font-size:50px" href="tel:+916281407118">+91 6281407118</a> to register your business</h1></marquee>');
 })
 
 // Start
