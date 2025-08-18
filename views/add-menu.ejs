@@ -40,6 +40,17 @@
       </div>
     </section>
     <a href="/dashboard" class="btn btn-outline-primary" style="margin-top:2rem;">Back to Dashboard</a>
+    <div class="my-4 text-center">
+  <h5>Customer QR Code</h5>
+  <p>Scan to place an order:</p>
+  <img src="<%= qrCodeDataUrl %>" alt="Order QR" style="max-width: 200px;" />
+  <br />
+  <a href="<%= qrCodeDataUrl %>" download="StreetWise-Order-QR.png" class="btn btn-outline-primary mt-2">
+    Download QR Code
+  </a>
+  <p class="text-muted mt-2"><small>URL: <%= qrUrl %></small></p>
+</div>
+
   </main>
   <%- include('partials/footer') %>
 </body>

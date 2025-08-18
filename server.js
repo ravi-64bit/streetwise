@@ -7,6 +7,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const MongoStore = require('connect-mongo')
 const methodOverride = require('method-override')
+const QRCode = require('qrcode')
 
 // DB helpers
 const {
@@ -99,7 +100,15 @@ app.get("/add-menu", ensureAuthenticated, async (req, res) => {
   const menuItems = await MenuItem.find({
     vendorId: new mongoose.Types.ObjectId(req.user.id)
   }).lean()
-  res.render('add-menu', { error: null, menuItems })
+  const vendorId = req.user.id;
+  const qrUrl= `https://streetwise-io6z.vercel.app/order/${vendorId}`;
+  const qrCodeDataUrl = await QRCode.toDataURL(qrUrl);
+  
+  res.render('add-menu', {
+     error: null,
+      menuItems,
+      qrUrl, 
+      qrCodeDataUrl});
 })
 
 

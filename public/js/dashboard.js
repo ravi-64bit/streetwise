@@ -1,132 +1,81 @@
-// public/js/dashboard.js
-document.addEventListener('DOMContentLoaded', () => {
-  let plates = [];
-  let currentPlateId = null;
+document.addEventListener("DOMContentLoaded", () => {
+  const ordersContainer = document.getElementById("ordersContainer");
+  const viewMenuBtn = document.getElementById("viewMenuBtn");
+  const addItemModalEl = document.getElementById("addItemModal");
+  const addItemForm = document.getElementById("addItemForm");
+  const menuItemSelect = document.getElementById("menuItemSelect");
+  const selectedItemPrice = document.getElementById("selectedItemPrice");
+  const menuItemsData = document.getElementById("menuItemsData");
 
-  const container = document.getElementById('platesContainer');
-  const newPlateBtn = document.getElementById('newPlateBtn');
-  const viewMenuBtn = document.getElementById('viewMenuBtn');
-
-  const addItemModalEl = document.getElementById('addItemModal');
-  const addItemModal = addItemModalEl ? new bootstrap.Modal(addItemModalEl) : null;
-  const addItemForm = document.getElementById('addItemForm');
-  const menuItemSelect = document.getElementById('menuItemSelect');
-  const selectedItemPriceEl = document.getElementById('selectedItemPrice');
-
-  const menuItemsDataEl = document.getElementById('menuItemsData');
+  const modal = addItemModalEl ? new bootstrap.Modal(addItemModalEl) : null;
+  let selectedOrderId = null;
   let menuItems = [];
+
   try {
-    if (menuItemsDataEl?.textContent) menuItems = JSON.parse(menuItemsDataEl.textContent);
-  } catch (_) {
-    menuItems = [];
+    if (menuItemsData?.textContent) {
+      menuItems = JSON.parse(menuItemsData.textContent);
+    }
+  } catch (err) {
+    console.error("Failed to parse menu items:", err);
   }
 
-  const INR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
-  const formatCurrency = (v) => INR.format(Number(v) || 0);
-  const escapeHtml = (str) =>
-    String(str).replace(/[&<>"']/g, (s) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[s]));
+  const formatPrice = (val) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 2,
+    }).format(Number(val) || 0);
 
-  // Populate dropdown with menu items
-  function populateMenuDropdown() {
-    if (!menuItemSelect) return;
-    menuItemSelect.innerHTML = '<option value="">Select an item</option>' +
-      menuItems.map(item =>
-        `<option value="${item._id}" data-price="${item.price}">${escapeHtml(item.name)} - ₹${item.price}</option>`
-      ).join('');
-    selectedItemPriceEl.textContent = '';
-  }
-
-  // Show price when item is selected
-  menuItemSelect?.addEventListener('change', function() {
-    const selected = menuItems.find(m => String(m._id) === String(this.value));
-    selectedItemPriceEl.textContent = selected ? `Price: ₹${selected.price}` : '';
+  // Show modal and populate dropdown
+  document.querySelectorAll(".add-item-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      selectedOrderId = btn.getAttribute("data-order-id");
+      menuItemSelect.innerHTML =
+        '<option value="">Select an item</option>' +
+        menuItems
+          .map(
+            (item) =>
+              `<option value="${item._id}" data-price="${item.price}">${item.name} - ₹${item.price}</option>`
+          )
+          .join("");
+      selectedItemPrice.textContent = "";
+      menuItemSelect.value = "";
+      modal?.show();
+    });
   });
 
-  function renderPlates() {
-    if (!container) return;
-    container.innerHTML = '';
-
-    plates.forEach((plate) => {
-      const total = plate.items.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
-
-      const col = document.createElement('div');
-      col.className = 'col-12 col-sm-6 col-lg-4'; // 1 / 2 / 3 columns
-
-      col.innerHTML = `
-        <div class="card plate-card mb-3" data-plate-id="${plate.id}">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Plate #${plate.number}</span>
-            <button class="btn btn-sm btn-outline-danger close-plate-btn" title="Close Plate" aria-label="Close plate ${plate.number}">&times;</button>
-          </div>
-          <div class="card-body d-flex flex-column">
-            <div class="mb-2">
-              <strong>Items:</strong>
-            </div>
-            <ul class="list-group list-group-flush plate-items-list mb-2">
-              ${plate.items.map((item) => `
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>${escapeHtml(item.name)}</span>
-                  <span>${formatCurrency(item.price)}</span>
-                </li>
-              `).join('')}
-            </ul>
-            <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
-              <button class="btn btn-sm btn-primary add-item-btn" data-plate-id="${plate.id}">Add Item</button>
-              <div>
-                <strong>Total: </strong>
-                <span class="plate-total">${formatCurrency(total)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      container.appendChild(col);
-    });
-
-    // Wire dynamic buttons
-    container.querySelectorAll('.add-item-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        currentPlateId = btn.getAttribute('data-plate-id');
-        populateMenuDropdown();
-        menuItemSelect.value = '';
-        selectedItemPriceEl.textContent = '';
-        addItemModal?.show();
-      });
-    });
-
-    container.querySelectorAll('.close-plate-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const plateId = btn.closest('.plate-card')?.getAttribute('data-plate-id');
-        plates = plates.filter((p) => String(p.id) !== String(plateId));
-        renderPlates();
-      });
-    });
-  }
-
-  newPlateBtn?.addEventListener('click', () => {
-    const nextNumber = plates.length ? Math.max(...plates.map((p) => p.number)) + 1 : 1;
-    plates.push({ id: Date.now() + Math.random(), number: nextNumber, items: [] });
-    renderPlates();
+  // Show price on select
+  menuItemSelect?.addEventListener("change", function () {
+    const selected = menuItems.find(
+      (item) => String(item._id) === String(this.value)
+    );
+    selectedItemPrice.textContent = selected
+      ? `Price: ₹${selected.price}`
+      : "";
   });
 
-  addItemForm?.addEventListener('submit', (e) => {
+  // Submit item to server
+  addItemForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const menuItemId = menuItemSelect?.value;
-    if (!menuItemId || !currentPlateId) return;
+    const itemId = menuItemSelect?.value;
+    if (!itemId || !selectedOrderId) return;
 
-    const itemObj = menuItems.find((m) => String(m._id) === String(menuItemId));
-    const plate = plates.find((p) => String(p.id) === String(currentPlateId));
-    if (itemObj && plate) {
-      plate.items.push({ name: itemObj.name, price: Number(itemObj.price) });
-      renderPlates();
-      addItemModal?.hide();
+    try {
+      await fetch(`/api/orders/${selectedOrderId}/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemId }),
+      });
+      location.reload(); // Refresh to show updated order
+    } catch (err) {
+      console.error("Failed to add item:", err);
+    } finally {
+      modal?.hide();
     }
   });
 
-  viewMenuBtn?.addEventListener('click', () => {
-    location.href = '/add-menu';
+  // View menu
+  viewMenuBtn?.addEventListener("click", () => {
+    location.href = "/add-menu";
   });
-
-  renderPlates();
 });
