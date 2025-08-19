@@ -80,8 +80,14 @@ a:hover { text-decoration: underline; color: #00406a; }
 /* --- Header (sticky, scrollable on overflow) --- */
 
 .sticky-header {
-  position: relative !important;
-  top: auto !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 0px !important;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px) saturate(120%);
 }
 
 

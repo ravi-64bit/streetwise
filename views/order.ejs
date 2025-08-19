@@ -15,9 +15,9 @@
       <% menuItems.forEach(item => { %>
         <div class="col-md-4 mb-3">
           <div class="plate-card">
-            <div class="card-header">
-              <h5><%= item.itemName %></h5>
-              <p>₹<%= item.price %></p>
+            <div class="card-header">              
+              <h6><%= item.name %></h6><br>
+              <p>₹<%= item.price %></p>              
             </div>
             <div class="card-body">
               <label for="qty-<%= item._id %>">Quantity:</label>
