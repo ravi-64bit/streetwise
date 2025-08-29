@@ -138,7 +138,7 @@ footer {
 .card-title .hyd {
   font-family: Qwitcher Grypen;
   color: pink;
-  font-weight: bold;
+  font-weight: bold,700;
   font-size: larger;
 ;
 }
