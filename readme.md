@@ -1,7 +1,7 @@
 # StreetWise
 
 **tiny POS for Hyderabadi street vendors**  
-Live: [https://streetwise-psi.vercel.app/](https://streetwise-psi.vercel.app/)
+Live: [https://streetwise-psi.vercel.app/](https://streetwise-io6z.vercel.app/)
 
 ---
 
